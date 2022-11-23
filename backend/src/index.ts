@@ -1,12 +1,12 @@
 import {IncomingMessage, ServerResponse} from "http";
-
-let http = require('http')
+import url from 'url'
+import http from 'http'
+import router from "./router";
 
 const server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-        data: 'Hello World!'
-    }));
+    let req_url = url.parse(req.url!, true)
+    let path = req_url.pathname?.split(/\/+/).filter(str => str.length > 0)! // localhost/api/ == localhost/api
+    router(req.method!, path, req, res)
 });
 
 server.listen(8000);
