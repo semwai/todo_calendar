@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "ts-node-dev src/index.ts",
     "build": "tsc",
-    "start": "node dist"
+    "start": "node dist",
+    "test": "ts-node-dev src/tests/*"
   }
 }
