@@ -19,8 +19,9 @@ function twoDimensional<T>(arr: T[], size: number): T[][]
     return res;
 }
 
-function CalendarHead() {
-    return <div>November - 2022</div>
+function CalendarHead({year, month}: {year: number, month: number}) {
+    const names = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+    return <div>{names[month]} - {year}</div>
 }
 function Day({num, holiday, today}: IDay) {
     if (num == 0) {
@@ -37,34 +38,34 @@ function Day({num, holiday, today}: IDay) {
 export function Calendar() {
 
     let [month, setMonth] = useState<IDay[][]>([[],[],[],[],[],[]])
+    const now = new Date();
+    let [y, setY] = useState(now.getFullYear())
+    let [m, setM] = useState(now.getMonth())
+    let [d, setD] = useState(now.getDate())
 
     useEffect(() => {
         const fetchData = async () => {
             const days: IDay[] = []
-            const now = new Date();
-            const y = now.getFullYear()
-            const m = now.getMonth()
-            const d = now.getDate()
             const offset = new Date(y, m, 0).getDay() // с какого дня недели начинаем счет
             const res = await fetch(`https://isdayoff.ru/api/getdata?year=${y}&month=${m + 1}`) // месяц тут с 1
             const holidays = (await res.text()).split('').map(s => s === '1')
-
+            console.log(holidays)
             for (let i = 0; i < offset; i++)
                 days.push(emptyDay)
             for (let i = 0; i < holidays.length; i++){
-                const dayOffset = i + offset
-                if (dayOffset == d)
+                const dayOffset = i + 1
+                if (dayOffset == now.getDate() && m == now.getMonth() && y == now.getFullYear())
                     days.push({num: dayOffset, holiday: holidays[i], today: true})
                 else
                     days.push({num: dayOffset, holiday: holidays[i]})
             }
-
+            console.log(days)
             return twoDimensional(days, 7)
         }
         fetchData().then(m => setMonth(m))
-    }, [])
+    }, [y, m, d])
 
-    return <div><CalendarHead/>
+    return <div><CalendarHead year={y} month={m}/>
         <table className={styles.calendar}>
             <thead>
                 <tr>
