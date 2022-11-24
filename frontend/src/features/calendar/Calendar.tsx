@@ -2,6 +2,7 @@ import styles from './Calendar.module.css';
 import CalendarHead from "./CalendarHead";
 import { IDay, selectCalendar} from "./calendarSlice";
 import {useAppSelector} from "../../app/hooks";
+import {Spinner} from "../spinner/Spinner";
 
 function Day({num, holiday, today}: IDay) {
     if (num === 0) {
@@ -18,6 +19,14 @@ function Day({num, holiday, today}: IDay) {
 
 export function Calendar() {
     const calendar = useAppSelector(selectCalendar);
+
+    if (calendar.table == null || calendar.status == 'loading') {
+        return <Spinner/>
+    }
+    if (calendar.status == 'failed') {
+        return <div>Error</div>
+    }
+
     return <div><CalendarHead/>
         <table className={styles.calendar}>
             <thead>
@@ -32,11 +41,9 @@ export function Calendar() {
             </tr>
             </thead>
             <tbody>
-            {calendar.table !== null?
-                [0, 1, 2, 3, 4].map(i => <tr key={i}>
-                    {calendar.table![i].map(d => <td key={d.num}><Day {...d}/></td>)}
-                </tr>):<p>load</p>}
-
+            {[0, 1, 2, 3, 4].map(i => <tr key={i}>
+                {calendar.table![i].map((d, j) => <td key={j}><Day {...d}/></td>)}
+                </tr>)}
             </tbody>
         </table>
     </div>

@@ -13,9 +13,9 @@ const lastDate = { year: store.getState().calendar.year, month: store.getState()
 store.subscribe(() => {
   const date = store.getState().calendar
   if (date.year != lastDate.year || date.month != lastDate.month) {
-    store.dispatch(fetchDaysAsync({year: date.year, month: date.month}))
     lastDate.month = date.month
     lastDate.year = date.year
+    store.dispatch(fetchDaysAsync({year: date.year, month: date.month}))
   }
 })
 

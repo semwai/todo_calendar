@@ -27,7 +27,6 @@ export function fetchDays(year: number, month: number) {
             } else
                 days.push({num: dayOffset, holiday: holidays[i]})
         }
-        console.log(days)
         resolve(twoDimensional(days, 7))
     })
 }
