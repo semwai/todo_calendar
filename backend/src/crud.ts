@@ -23,6 +23,15 @@ export function getTask(dispatcher: IDispatcher) {
     }
 }
 
+
+export function getTasksByDate(dispatcher: IDispatcher) {
+    const tasks = taskStorage.getByDate(new Date())
+    dispatcher.response.writeHead(200, {'Content-Type': 'application/json'});
+    dispatcher.response.json({
+        tasks: tasks
+    })
+}
+
 export function getUser(dispatcher: IDispatcher) {
     dispatcher.response.writeHead( 200, {'Content-Type':'application/json'});
     dispatcher.response.json({
