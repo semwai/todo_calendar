@@ -1,16 +1,8 @@
 import styles from './Calendar.module.css';
 import {useEffect, useState} from "react";
 import CalendarHead from "./CalendarHead";
-
-interface IDay {
-    num: number // номер дня
-    holiday: boolean // выходной ли
-    today?: boolean
-}
-
-const emptyDay = {
-    num: 0, holiday: false
-}
+import {emptyDay, IDay, selectCalendar} from "./calendarSlice";
+import {useAppSelector} from "../../app/hooks";
 
 function twoDimensional<T>(arr: T[], size: number): T[][] {
     let res = [];
@@ -34,34 +26,32 @@ function Day({num, holiday, today}: IDay) {
 }
 
 export function Calendar() {
+    const calendar = useAppSelector(selectCalendar);
 
     let [table, setTable] = useState<IDay[][]>([[], [], [], [], [], []])
     const now = new Date();
-    let [y, setY] = useState(now.getFullYear())
-    let [m, setM] = useState(now.getMonth())
-    let [d, setD] = useState(now.getDate())
 
     useEffect(() => {
         const fetchData = async () => {
             const days: IDay[] = []
-            const offset = new Date(y, m, 0).getDay() // с какого дня недели начинаем счет
-            const res = await fetch(`https://isdayoff.ru/api/getdata?year=${y}&month=${m + 1}`) // месяц тут с 1
+            const offset = new Date(calendar.year, calendar.month, 0).getDay() // с какого дня недели начинаем счет
+            const res = await fetch(`https://isdayoff.ru/api/getdata?year=${calendar.year}&month=${calendar.month + 1}`) // месяц тут с 1
             const holidays = (await res.text()).split('').map(s => s === '1')
             for (let i = 0; i < offset; i++) days.push(emptyDay)
             for (let i = 0; i < holidays.length; i++) {
                 const dayOffset = i + 1
-                if (dayOffset === now.getDate() && m === now.getMonth() && y === now.getFullYear()) {
+                if (dayOffset === now.getDate() && calendar.month === now.getMonth() && calendar.year === now.getFullYear()) {
                     days.push({num: dayOffset, holiday: holidays[i], today: true})
                 } else
                     days.push({num: dayOffset, holiday: holidays[i]})
             }
+            console.log(days)
             return twoDimensional(days, 7)
         }
-        console.log(m)
         fetchData().then(m => setTable(m))
-    }, [y, m, d])
+    }, [calendar.year, calendar.month, calendar.day])
 
-    return <div><CalendarHead year={y} month={m} setYear={setY} setMonth={setM}/>
+    return <div><CalendarHead/>
         <table className={styles.calendar}>
             <thead>
             <tr>
@@ -75,8 +65,8 @@ export function Calendar() {
             </tr>
             </thead>
             <tbody>
-            {[0, 1, 2, 3, 4].map(i => <tr>
-                {table[i].map(d => <td><Day {...d}/></td>)}
+            {[0, 1, 2, 3, 4].map(i => <tr key={i}>
+                {table[i].map(d => <td key={d.num}><Day {...d}/></td>)}
             </tr>)}
 
             </tbody>
