@@ -1,6 +1,7 @@
 .close {
-    border-radius: 50%;
-    background-color: red;
+    position: absolute;
+    left: 0;
+    top: 0;
     border: none;
     font-family: inherit;
     font-size: inherit;

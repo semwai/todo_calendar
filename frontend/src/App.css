@@ -22,6 +22,14 @@
   font-size: calc(10px + 3vw);
 }
 
+.calendar {
+
+
+  align-items: center;
+  justify-content: start;
+
+}
+
 .App-link {
   color: rgb(112, 76, 182);
 }

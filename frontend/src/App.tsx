@@ -10,9 +10,13 @@ function App() {
 
     return (
         <div className="App">
-            <header className="App-header">
-                {tasks.date == null?<Calendar/>:<Tasks/>}
-            </header>
+            {tasks.date == null?
+                <header className="App-header">
+                    <Calendar/>
+                </header>:
+                <header className="App-header calendar">
+                    <Tasks/>
+                </header>}
         </div>);
 }
 

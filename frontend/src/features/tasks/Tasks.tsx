@@ -11,7 +11,8 @@ export default function Tasks() {
         return <div/>
 
     return <div>
-        <button className={styles.close} onClick={() => dispatch(setDate(null))}>X</button>
-        <div>Задачи на {tasks.date.day} {monthNames[tasks.date.month]} {tasks.date.year}:</div>
+        <div>Задачи на {tasks.date.day} {monthNames[tasks.date.month]} {tasks.date.year}:
+            <button className={styles.close} onClick={() => dispatch(setDate(null))}>Назад</button>
+        </div>
     </div>
 }
