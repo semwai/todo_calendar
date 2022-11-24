@@ -14,3 +14,13 @@
     -ms-user-select: none;       /* Internet Explorer/Edge */
     user-select: none;          /* Non-prefixed version, currently not supported by any browser */
 }
+
+.select {
+    appearance: none;
+    background-color: #fff;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+}
