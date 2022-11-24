@@ -1,10 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
 import calendarReducer, {fetchDaysAsync} from '../features/calendar/calendarSlice';
+import tasksReducer from '../features/tasks/tasksSlice';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    tasks: tasksReducer,
     calendar: calendarReducer
   },
 });

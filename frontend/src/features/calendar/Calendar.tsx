@@ -1,21 +1,9 @@
 import styles from './Calendar.module.css';
 import CalendarHead from "./CalendarHead";
-import { IDay, selectCalendar} from "./calendarSlice";
+import {selectCalendar} from "./calendarSlice";
 import {useAppSelector} from "../../app/hooks";
 import {Spinner} from "../spinner/Spinner";
-
-function Day({num, holiday, today}: IDay) {
-    if (num === 0) {
-        return <></>
-    }
-    if (today) {
-        return <div className={styles.today}>{num}</div>
-    } else if (holiday) {
-        return <div className={styles.holiday}>{num}</div>
-    } else {
-        return <div>{num}</div>
-    }
-}
+import Day from "./Day";
 
 export function Calendar() {
     const calendar = useAppSelector(selectCalendar);

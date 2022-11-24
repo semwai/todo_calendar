@@ -14,6 +14,7 @@ export function fetchDays(year: number, month: number) {
         const now = new Date();
         const days: IDay[] = []
         const offset = new Date(year, month, 0).getDay() // с какого дня недели начинаем счет
+        // возможно лучше сделать данный запрос на сервере и давать клиенту закешированные данные чтобы не нагружать isdayoff.ru лишний раз
         const res = await fetch(`https://isdayoff.ru/api/getdata?year=${year}&month=${month + 1}`) // месяц тут с 1
         if (res.status !== 200) {
             reject(res.statusText)
