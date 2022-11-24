@@ -8,12 +8,10 @@ import Tasks from "./features/tasks/Tasks";
 function App() {
     const tasks = useAppSelector(selectTasks);
 
-    if (tasks.date !== null) {
-        return <Tasks/>
-    } else return (
+    return (
         <div className="App">
             <header className="App-header">
-                <Calendar/>
+                {tasks.date == null?<Calendar/>:<Tasks/>}
             </header>
         </div>);
 }

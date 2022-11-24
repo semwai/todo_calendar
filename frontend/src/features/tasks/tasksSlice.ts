@@ -20,7 +20,7 @@ export const tasksSlice = createSlice({
     initialState,
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
-        setDate: (state, action: PayloadAction<IDate>) => {
+        setDate: (state, action: PayloadAction<IDate | null>) => {
             state.date = action.payload
         },
     },
