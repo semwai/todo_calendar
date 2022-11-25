@@ -3,7 +3,7 @@ import {Task} from "./models";
 interface TaskStorage {
     add(t: Task): void
     get(id: number): Task | undefined
-    getByDate(date: Date): Task | undefined
+    getByDate(date: Date): Task[]
 
 }
 
@@ -21,8 +21,8 @@ export class MemoryTaskStorage implements TaskStorage{
         return this.store.find(task => task.id === id)
     }
 
-    getByDate(date: Date): Task | undefined {
-        // todo
-        return
+    getByDate(date: Date): Task[] {
+        // Все даты с точностью до дня
+        return this.store.filter(task => task.date.toLocaleDateString() === date.toLocaleDateString())
     }
 }

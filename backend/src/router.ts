@@ -1,16 +1,21 @@
 import {IncomingMessage, ServerResponse} from "http";
-import {getTask, getUser} from "./crud";
+import {getTask, getTasksByDate, getUser} from "./crud";
+import url from "url";
 
 interface IRouter {
     [id: string] : {path: string[], func: (crud: IDispatcher) => void}[]
 }
 
 type map = {[name: string]: string}
+type mapQuery = {[name: string]: string | string[] | undefined}
 
 let routerStorage: IRouter = {
     "GET": [{
         path: ['task', ':id'],
         func: getTask
+    },{
+        path: ['tasks'],
+        func: getTasksByDate
     },{
         path: ['user', ':id'],
         func: getUser
@@ -34,10 +39,11 @@ export interface IDispatcher {
         json: (data: object) => void
     },
     // Всякие переменные /task/:id => {id: value}
-    params: map
+    params: map,
+    query: mapQuery
 }
 
-const httpDispatcher = (req: IncomingMessage, res: ServerResponse, params: map): IDispatcher => {
+const httpDispatcher = (req: IncomingMessage, res: ServerResponse, params: map, query: mapQuery): IDispatcher => {
     return {
         request: {
             method: req.method || '',
@@ -50,14 +56,18 @@ const httpDispatcher = (req: IncomingMessage, res: ServerResponse, params: map):
             send: (data) => res.end(data),
             json: (data) => res.end(JSON.stringify(data))
         },
-        params: params
+        params: params,
+        query: query
     }
 }
 //* Выбор функции, пути заданы в массиве
-export default function router(method: string, path: string[], req: IncomingMessage, res: ServerResponse) {
-    let methodPath =  routerStorage[method]
+export default function router(req: IncomingMessage, res: ServerResponse) {
+    const method = req.method!
+    const req_url = url.parse(req.url!, true)
+    const path = req_url.pathname?.split(/\/+/).filter(str => str.length > 0)! // localhost/api/ => localhost/api
+    const methodPath =  routerStorage[method]
     let params: map  = {}
-    let r = methodPath.find(storage => {
+    const r = methodPath.find(storage => {
         if (storage.path.length != path.length)
             return false
         for (let i = 0; i < path.length; i++) {
@@ -71,7 +81,7 @@ export default function router(method: string, path: string[], req: IncomingMess
         }
         return true
     })
-    const dispatcher = httpDispatcher(req, res, params)
+    const dispatcher = httpDispatcher(req, res, params, req_url.query)
     if (r) {
         r.func(dispatcher)
     } else {

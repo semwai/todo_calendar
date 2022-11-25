@@ -1,10 +1,11 @@
 import {IDispatcher} from "./router";
 import {MemoryTaskStorage} from "./storage";
-import {TaskStatus} from "./models";
+import {Task, TaskStatus} from "./models";
 
 const taskStorage = new MemoryTaskStorage()
 taskStorage.add({id: 1, date: new Date(), status: TaskStatus.Created, description: 'Пельмени сделать'})
 taskStorage.add({id: 2, date: new Date(), status: TaskStatus.Created, description: 'Чай сделать'})
+taskStorage.add({id: 3, date: new Date("2022-11-01"), status: TaskStatus.Created, description: 'Чай выпить'})
 
 
 export function getTask(dispatcher: IDispatcher) {
@@ -25,7 +26,12 @@ export function getTask(dispatcher: IDispatcher) {
 
 
 export function getTasksByDate(dispatcher: IDispatcher) {
-    const tasks = taskStorage.getByDate(new Date())
+    console.log(dispatcher.query)
+    let tasks: Task[]
+    if (dispatcher.query.date)
+        tasks = taskStorage.getByDate(new Date(dispatcher.query.date))
+    else
+        tasks = taskStorage.getByDate(new Date()) // сегодня
     dispatcher.response.writeHead(200, {'Content-Type': 'application/json'});
     dispatcher.response.json({
         tasks: tasks
