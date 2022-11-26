@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {fetchTasks} from "./taskApi";
+import {fetchAddTask, fetchTasks} from "./taskApi";
 
 export interface IDate{
     day: number
@@ -39,6 +39,13 @@ export const fetchTasksAsync = createAsyncThunk(
     }
 );
 
+export const fetchAddTasksAsync = createAsyncThunk(
+    'tasks/fetchAddTask',
+    async (task: ITask) => {
+        return await fetchAddTask(task);
+    }
+);
+
 export const tasksSlice = createSlice({
     name: 'calendar',
     initialState,
@@ -59,7 +66,20 @@ export const tasksSlice = createSlice({
             })
             .addCase(fetchTasksAsync.rejected, (state) => {
                 state.status = 'failed';
+            })
+
+            .addCase(fetchAddTasksAsync.pending, (state) => {
+                //state.status = 'loading';
+            })
+            .addCase(fetchAddTasksAsync.fulfilled, (state, action) => {
+                //state.status = 'idle';
+                state.tasks = [...state.tasks, action.payload];
+            })
+            .addCase(fetchAddTasksAsync.rejected, (state) => {
+                //state.status = 'failed';
             });
+
+
     }
 });
 
