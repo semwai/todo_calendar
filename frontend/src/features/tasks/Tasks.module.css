@@ -8,3 +8,24 @@
     cursor: inherit;
     line-height: inherit;
 }
+
+.tasks {
+    max-width: 650px;
+    text-align: left;
+    font-size: calc(10px + 2vw);
+}
+
+.task {
+    border: 1px solid #eee;
+    font-size: calc(10px + 1.5vw);
+    margin: 10px;
+    padding: 10px;
+}
+
+.checkbox {
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+}
