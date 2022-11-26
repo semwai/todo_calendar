@@ -1,4 +1,4 @@
-import {IDate, ITask} from "./tasksSlice";
+import {IDate, INewTask, ITask} from "./tasksSlice";
 
 
 export function fetchTasks(date: IDate) {
@@ -12,16 +12,20 @@ export function fetchTasks(date: IDate) {
     })
 }
 
-export function fetchAddTask(task: ITask) {
+export function fetchAddTask(task: INewTask) {
     return new Promise<ITask>(async (resolve, reject) => {
+
         const res = await fetch('/task', {
             method: 'POST',
-            body: JSON.stringify(task)
+            body: JSON.stringify({
+                description: task.description,
+                date: `${task.date.year}-${task.date.month+1}-${task.date.day}`
+            })
         })
         if (res.status !== 200) {
             reject(res.statusText)
         }
         const data = await res.json()
-        resolve(data)
+        resolve(data.task)
     })
 }

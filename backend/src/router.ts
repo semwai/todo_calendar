@@ -1,5 +1,5 @@
 import {IncomingMessage, ServerResponse} from "http";
-import {getTask, getTasksByDate, getUser} from "./crud";
+import {getTask, getTasksByDate, getUser, postTask} from "./crud";
 import url from "url";
 
 interface IRouter {
@@ -20,6 +20,10 @@ let routerStorage: IRouter = {
         path: ['user', ':id'],
         func: getUser
     }],
+    "POST": [{
+        path: ['task'],
+        func: postTask
+    }]
 }
 
 // Всё, что может потребоваться обработчику http запросов, моё dependency inversion
@@ -40,10 +44,11 @@ export interface IDispatcher {
     },
     // Всякие переменные /task/:id => {id: value}
     params: map,
-    query: mapQuery
+    query: mapQuery,
+    body?: map
 }
 
-const httpDispatcher = (req: IncomingMessage, res: ServerResponse, params: map, query: mapQuery): IDispatcher => {
+const httpDispatcher = (req: IncomingMessage, res: ServerResponse, params: map, query: mapQuery, body?: map): IDispatcher => {
     return {
         request: {
             method: req.method || '',
@@ -57,7 +62,8 @@ const httpDispatcher = (req: IncomingMessage, res: ServerResponse, params: map, 
             json: (data) => res.end(JSON.stringify(data))
         },
         params: params,
-        query: query
+        query: query,
+        body: body
     }
 }
 //* Выбор функции, пути заданы в массиве
@@ -81,12 +87,31 @@ export default function router(req: IncomingMessage, res: ServerResponse) {
         }
         return true
     })
-    const dispatcher = httpDispatcher(req, res, params, req_url.query)
-    if (r) {
-        r.func(dispatcher)
-    } else {
-        res.statusCode = 404
-        res.statusMessage = 'not found'
-        res.end('not found')
-    }
+    let dispatcher: IDispatcher
+    let rawBody = '';
+    let body: map | undefined = undefined
+    req.on('data', (chunk) => {
+        rawBody += chunk.toString();
+    }).on('end', () => {
+        console.log(rawBody)
+        try {
+            body = JSON.parse(rawBody)
+        }
+        catch (e) {
+            console.log("Error parse ", rawBody)
+        }
+        dispatcher = httpDispatcher(req, res, params, req_url.query, body)
+        console.log(dispatcher.params, dispatcher.query, body)
+        if (r) {
+            r.func(dispatcher)
+        } else {
+            res.statusCode = 404
+            res.statusMessage = 'not found'
+            res.end('not found')
+        }
+    });
+
+
+
+
 }

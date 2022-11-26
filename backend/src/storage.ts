@@ -9,12 +9,21 @@ interface TaskStorage {
 
 export class MemoryTaskStorage implements TaskStorage{
     private store: Task[] = []
-
-    add(t: Task) {
-        if (this.store.find(task => task.id === t.id)) {
+    private lastId = 0
+    add(t: Task): Task {
+        if (t.id !== 0 && this.store.find(task => task.id === t.id)) {
             throw Error(`task with ${t.id} already exist`)
         }
-        this.store = [...this.store, t]
+        if (t.id === 0) {
+            const nt = {...t, id: this.lastId}
+            this.store = [...this.store, nt]
+            this.lastId += 1
+            return nt
+        } else {
+            this.store = [...this.store, t]
+            return t
+        }
+
     }
 
     get(id: number): Task | undefined {

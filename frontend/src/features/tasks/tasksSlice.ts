@@ -20,6 +20,12 @@ export interface ITask {
     status: TaskStatus
 
 }
+
+export interface INewTask {
+    description: string
+    date: IDate
+}
+
 export interface TasksState {
     date: IDate | null // текущаю открытая дата
     tasks: ITask[],
@@ -41,7 +47,7 @@ export const fetchTasksAsync = createAsyncThunk(
 
 export const fetchAddTasksAsync = createAsyncThunk(
     'tasks/fetchAddTask',
-    async (task: ITask) => {
+    async (task: INewTask) => {
         return await fetchAddTask(task);
     }
 );

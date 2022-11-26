@@ -1,19 +1,17 @@
 import styles from "./Tasks.module.css";
 import {useState} from "react";
-import {useAppDispatch} from "../../app/hooks";
-import {fetchAddTasksAsync, ITask, TaskStatus} from "./tasksSlice";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {fetchAddTasksAsync, INewTask, selectTasks} from "./tasksSlice";
 
 export function NewTask() {
-
+    const t = useAppSelector(selectTasks)
     const [description, setDescription] = useState('')
     const dispatch = useAppDispatch()
 
     const add = () => {
-        const task: ITask = {
-            id: 132,
+        const task: INewTask = {
             description: description,
-            status: TaskStatus.Created,
-            date: new Date()
+            date: t.date!!
         }
         dispatch(fetchAddTasksAsync(task))
     }
