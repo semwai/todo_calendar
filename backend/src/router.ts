@@ -103,6 +103,7 @@ export default function router(req: IncomingMessage, res: ServerResponse) {
         dispatcher = httpDispatcher(req, res, params, req_url.query, body)
         console.log(dispatcher.params, dispatcher.query, body)
         if (r) {
+            res.setHeader('Access-Control-Allow-Origin','http://localhost:8080')
             r.func(dispatcher)
         } else {
             res.statusCode = 404
