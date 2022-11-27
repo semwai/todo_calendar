@@ -14,9 +14,12 @@ function App() {
                 <header className="App-header">
                     <Calendar/>
                 </header>:
-                <header className="App-header calendar">
+                <header className="App-header">
                     <Tasks/>
-                </header>}
+                    <Calendar/>
+                </header>
+            }
+
         </div>);
 }
 
