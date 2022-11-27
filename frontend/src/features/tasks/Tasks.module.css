@@ -1,8 +1,5 @@
 .close {
-    position: absolute;
-    left: 0;
-    top: 0;
-    border: none;
+    float: right;
     font-family: inherit;
     font-size: inherit;
     cursor: inherit;
@@ -10,10 +7,17 @@
 }
 
 .tasks {
-    min-width: 90%;
-    max-width: 600px;
+    width: 90%;
+    max-width: 800px;
     text-align: left;
     font-size: calc(10px + 2vw);
+    border: 1px solid #eeeeee;
+    border-radius: 5px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    background-color: #fff;
+    transform: translate(-50%, -50%);
 }
 
 .task {
@@ -48,7 +52,7 @@
 }
 
 .head {
-    margin-top: calc(15px + 2.5vw);
+    padding: calc(5px + 0.5vw);
 }
 
 .changeButton {

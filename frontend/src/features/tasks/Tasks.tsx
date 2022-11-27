@@ -23,12 +23,11 @@ export default function Tasks() {
         return <Spinner/>
     } else {
         return <div className={styles.tasks}>
-            <button className={styles.close} onClick={() => dispatch(setDate(null))}>Назад</button>
-            <div className={styles.head}>Задачи на {t.date.day} {monthNames[t.date.month]} {t.date.year}:
-                {t.tasks.map(t => <Task key={t.id} {...t}/>)}
-                <NewTask/>
+            <div className={styles.head}>Задачи на {t.date.day} {monthNames[t.date.month]} {t.date.year}
+                <button className={styles.close} onClick={() => dispatch(setDate(null))}>Закрыть</button>
             </div>
-
+            {t.tasks.map(t => <Task key={t.id} {...t}/>)}
+            <NewTask/>
         </div>
     }
 }
