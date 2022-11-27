@@ -1,0 +1,61 @@
+.close {
+    position: absolute;
+    left: 0;
+    top: 0;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+}
+
+.tasks {
+    min-width: 90%;
+    max-width: 600px;
+    text-align: left;
+    font-size: calc(10px + 2vw);
+}
+
+.task {
+    border: 1px solid #eee;
+    font-size: calc(10px + 1.5vw);
+    margin: calc(5px + 0.5vw);;
+    padding: calc(5px + 0.5vw);
+}
+
+.input {
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+    width: 65%;
+}
+
+.checkboxContainer {
+    display:inline-block;
+    width: 5%;
+}
+
+.checkbox {
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+    width: calc(10px + 1.1vw);
+    height: calc(10px + 1.1vw);
+}
+
+.head {
+    margin-top: calc(15px + 2.5vw);
+}
+
+.changeButton {
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+    float: right;
+    width: 24%;
+}

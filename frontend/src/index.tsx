@@ -5,10 +5,12 @@ import { store } from './app/store';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
+import {fetchDaysAsync} from "./features/calendar/calendarSlice";
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
-
+const now = new Date()
+store.dispatch(fetchDaysAsync({year: now.getFullYear(), month: now.getMonth()}))
 root.render(
   <React.StrictMode>
     <Provider store={store}>

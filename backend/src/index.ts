@@ -1,12 +1,9 @@
 import {IncomingMessage, ServerResponse} from "http";
-
-let http = require('http')
+import http from 'http'
+import router from "./router";
 
 const server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-        data: 'Hello World!'
-    }));
+    router(req, res)
 });
 
 server.listen(8000);
