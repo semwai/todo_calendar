@@ -21,4 +21,19 @@
 9. [x] Реализация второй модели зрелости REST
 10. [x] Реализация эндпоинтов по типу /task/:id и т.п.
 11. [x] Реализовать dependency inversion для интерфейса работы с HTTP запросами
-12. [ ] Разворачивание проекта в Docker
+12. [x] Разворачивание проекта в Docker
+
+# Запуск
+
+## Frontend
+```bash
+cd frontend
+docker build -t frontend .
+docker run --rm -it -p 8080:80 frontend
+```
+## Backend
+```bash
+cd backend
+docker build -t backend .
+docker run --rm -it -p 8000:8000 backend
+```
