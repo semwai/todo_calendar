@@ -1,9 +1,10 @@
 import {Task} from "./models";
+import {Database} from "sqlite3";
 
 interface TaskStorage {
-    add(t: Task): void
-    get(id: number): Task | undefined
-    getByDate(date: Date): Task[]
+    add(t: Task): Task
+    get(id: number, callback: (task: Task | undefined) => void): void
+    getByDate(date: Date, callback: (tasks: Task[]) => void): void
 
 }
 
@@ -26,12 +27,57 @@ export class MemoryTaskStorage implements TaskStorage{
 
     }
 
-    get(id: number): Task | undefined {
-        return this.store.find(task => task.id === id)
+    get(id: number, callback: (task: Task | undefined) => void) {
+        callback(this.store.find(task => task.id === id))
     }
 
-    getByDate(date: Date): Task[] {
+    getByDate(date: Date, callback: (tasks: Task[]) => void) {
         // Все даты с точностью до дня
-        return this.store.filter(task => task.date.toLocaleDateString() === date.toLocaleDateString())
+        callback(
+            this.store.filter(task => task.date.toLocaleDateString() === date.toLocaleDateString())
+        )
+    }
+}
+
+
+export class SqliteTaskStorage implements TaskStorage{
+    private db: Database
+
+    constructor(db: Database) {
+        this.db = db
+        this.db.serialize(() => {
+            this.db.run("CREATE TABLE IF NOT EXISTS Task (id INTEGER PRIMARY KEY, description TEXT, status INTEGER, date TEXT)")
+        })
+    }
+
+    add(t: Task): Task {
+        this.db.run(
+            "INSERT INTO Task (description, status, date) values(?, ?, ?)",
+            [t.description, t.status, t.date.toLocaleDateString()],
+            (err) => {
+                if (err)
+                    throw err
+            })
+        return t
+    }
+
+    get(id: number, callback: (task: Task | undefined) => void) {
+        let task: Task | undefined = undefined
+        this.db.all("SELECT * FROM Task WHERE id = ?", [id], (err, data) => {
+            const first = data[0]
+            task = new Task(first.id, first.description, new Date(first.date), first.status)
+            callback(task)
+        })
+    }
+
+    getByDate(date: Date, callback: (tasks: Task[]) => void) {
+        // Все даты с точностью до дня
+        let tasks: Task[] = []
+        this.db.all("SELECT * FROM Task WHERE Date = ?", [date.toLocaleDateString()], (err, data) => {
+            data.forEach(row => {
+                tasks.push(new Task(row.id, row.description, new Date(row.date), row.status))
+            })
+            callback(tasks)
+        })
     }
 }

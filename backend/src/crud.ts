@@ -1,39 +1,36 @@
 import {IDispatcher} from "./router";
-import {MemoryTaskStorage} from "./storage";
+import {SqliteTaskStorage} from "./storage";
 import {Task, TaskStatus} from "./models";
+const sqlite3 = require('sqlite3');
 
-const taskStorage = new MemoryTaskStorage()
-taskStorage.add({id: 0, date: new Date(), status: TaskStatus.Created, description: 'Пельмени сделать'})
-taskStorage.add({id: 0, date: new Date(), status: TaskStatus.Created, description: 'Чай сделать'})
-taskStorage.add({id: 0, date: new Date("2022-11-01"), status: TaskStatus.Created, description: 'Чай выпить'})
+const db = new sqlite3.Database('storage.db');
+const taskStorage = new SqliteTaskStorage(db)
 
 
 export function getTask(dispatcher: IDispatcher) {
     const id = Number(dispatcher.params['id'])
-    const task = taskStorage.get(id)
-    if (task) {
-        dispatcher.response.writeHead(200, {'Content-Type': 'application/json'});
-        dispatcher.response.json({
-            task: task
-        })
-    } else {
-        dispatcher.response.writeHead(404, {'Content-Type': 'application/json'});
-        dispatcher.response.json({
-            message: `task with id ${id} not found`
-        })
-    }
+    taskStorage.get(id, (task) => {
+        if (task) {
+            dispatcher.response.writeHead(200, {'Content-Type': 'application/json'});
+            dispatcher.response.json({
+                task: task
+            })
+        } else {
+            dispatcher.response.writeHead(404, {'Content-Type': 'application/json'});
+            dispatcher.response.json({
+                message: `task with id ${id} not found`
+            })
+        }
+    })
 }
 
 
 export function getTasksByDate(dispatcher: IDispatcher) {
-    let tasks: Task[]
-    if (dispatcher.query.date)
-        tasks = taskStorage.getByDate(new Date(dispatcher.query.date as string))
-    else
-        tasks = taskStorage.getByDate(new Date()) // сегодня
-    dispatcher.response.writeHead(200, {'Content-Type': 'application/json'});
-    dispatcher.response.json({
-        tasks: tasks
+    taskStorage.getByDate(new Date(dispatcher.query.date as string), (tasks) => {
+        dispatcher.response.writeHead(200, {'Content-Type': 'application/json'});
+        dispatcher.response.json({
+            tasks: tasks
+        })
     })
 }
 
